@@ -19,11 +19,15 @@ Below is the link to install this project locally
 https://github.com/developer1820/finalcapstone.git
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Here is the screenshot when user wants to register
 ![screenshot of project in action](C:\Users\nehak\OneDrive\Desktop\task17.png)
 =======
 Here is the link for a screenshot of a project in action
 ![screenshot of project in action](C:\Users\nehak\OneDrive\Desktop\task17.png)
+=======
+
+>>>>>>> 7a2a31b67c37a67e0b814230f38b06c3477afd4d
 
 
 
