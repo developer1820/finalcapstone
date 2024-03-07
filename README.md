@@ -18,8 +18,7 @@ This project facilitates users in performing the following activities:
 Below is the link to install this project locally
 https://github.com/developer1820/finalcapstone.git
 
-Here is the link for a screenshot of a project in action
-![screenshot of project in action](C:\Users\nehak\OneDrive\Desktop\task17.png)
+
 
 
 
