@@ -1,0 +1,10 @@
+
+Total Users: 			6
+Total Tasks: 			5
+UserName 	 Number_Of_Task_Assigned 	Percentage_Completed 	 Percentage_Remaining 	Percentage_Overdue
+admin 				 2 							50.0 				 50.0 					 0.0
+amit 				 1 							100.0 				 0.0 					 0.0
+jessica 				 1 							100.0 				 0.0 					 0.0
+carol 				 1 							0.0 				 100.0 					 0.0
+john 				 0 							0 					 0 						 0
+mike 				 0 							0 					 0 						 0

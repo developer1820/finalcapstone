@@ -1,0 +1,6 @@
+
+amit;First task;First task des;2024-03-04;2024-04-01;Yes
+admin;Write Java program;Using methods and constructors;2024-03-04;2024-03-17;Yes
+jessica;CSV;Employee data;2024-03-04;2024-03-25;Yes
+admin;Python;Data types, functions, OOP;2024-03-04;2024-04-01;No
+carol;Create an application for gym;display name, id, workout plan;2024-03-07;2024-04-10;No

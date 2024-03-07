@@ -1,0 +1,7 @@
+admin;password
+amit;123
+john;12
+jessica;123
+carol;159
+mike;100
+niki;789
