@@ -11,6 +11,7 @@ program will look in your root directory for the text files.
 
 import os
 from datetime import datetime, date
+import sys
 
 DATETIME_STRING_FORMAT = "%Y-%m-%d"
 
@@ -85,7 +86,7 @@ def login(curr_user, curr_pass):
     elif username_password[curr_user] != curr_pass:
         print("\nWrong password\n")
     else:
-        print("\nLogin Successful!")
+        # print("\nLogin Successful!")
         return True
 
 
@@ -199,13 +200,17 @@ def generate_reports():
                                       * 100, 2)
     except Exception as e:
         print(e)
-    display_task = f"Total Tasks: \t\t\t\t\t{total_tasks}\n"
-    display_task += f"Total Completed Tasks: \t\t\t{total_completed_tasks}\n"
-    display_task += f"Total Incompleted Tasks: \t\t{total_incompleted_tasks}\n"
-    display_task += f"Total Overdue Tasks: \t\t\t{total_overdue_tasks}\n"
-    display_task += ("Percentage of Incomplete Tasks: " +
-                     f"{perc_of_incomplete_tasks}\n")
-    display_task += f"Percentage of Overdue Tasks: \t{perc_of_overdue_tasks}\n"
+
+    display_task = f"""\t\t\t*** Task Overview ***
+----------------------------------------------------------------
+Total Tasks:                    {total_tasks}
+Total Completed Tasks:          {total_completed_tasks}
+Total Incompleted Tasks:        {total_incompleted_tasks}
+Total Overdue Tasks:            {total_overdue_tasks}
+Percentage of Incomplete Tasks: {perc_of_incomplete_tasks}
+Percentage of Overdue Tasks:    {perc_of_overdue_tasks}
+    """
+
     write_into_file("task_overview.txt", data=display_task, mode="w")
 
     users_data = read_file("user.txt")
@@ -268,29 +273,64 @@ def generate_reports():
 
         if bool(user_info):
             info.append(user_info)
-    display_task = f"Total Users: \t\t\t{total_users}\n"
-    display_task += f"Total Tasks: \t\t\t{total_tasks}\n"
-    display_task += ("UserName \t Number_Of_Task_Assigned \t" +
-                     "Percentage_Completed \t Percentage_Remaining \t"
-                     + "Percentage_Overdue")
+
+    display_task = f"""\t\t\t*** User Overview ***
+----------------------------------------------------------------
+Total Users: {total_users}
+Total Tasks: {total_tasks}
+----------------------------------------------------------------
+UserName    Task_Assigned   Completed(%)    Remaining(%)    Overdue(%)"""
     write_into_file("user_overview.txt", data=display_task, mode="w")
 
     for usr_data in info:
-        user_string = (f"{usr_data["username"]} \t\t\t\t "
-                       f"{usr_data[usr_data["username"]]} \t\t\t\t\t\t\t"
-                       f"{usr_data["percent_completed"]} \t\t\t\t "
-                       f"{usr_data["remaining_percent"]} \t\t\t\t\t "
+        user_string = (f"{usr_data["username"]} \t\t\t"
+                       f"{usr_data[usr_data["username"]]} \t\t\t\t"
+                       f"{usr_data["percent_completed"]} \t\t\t"
+                       f"{usr_data["remaining_percent"]} \t\t\t"
                        f"{usr_data["overdue_percent"]}")
         write_into_file("user_overview.txt", data=user_string, mode="a")
 
     for name in unassigned_usernames:
-        user_string = (f"{name} \t\t\t\t "
-                       "0 \t\t\t\t\t\t\t"
-                       "0 \t\t\t\t\t "
-                       "0 \t\t\t\t\t\t "
+        user_string = (f"{name} \t\t\t"
+                       "0 \t\t\t\t"
+                       "0 \t\t\t\t"
+                       "0 \t\t\t\t"
                        "0")
         write_into_file("user_overview.txt", data=user_string, mode="a")
-    print("\nReports has been generated.\n")
+    return "\nReports has been generated.\n"
+
+
+while True:
+    login_register = input("Select option from below: \n L - Login\n " +
+                           "R - Register\n : ").lower()
+    if login_register == "l":
+        current_user = input("Username: ")
+        current_password = input("Password: ")
+        while not login(current_user, current_password):
+            user_choice = input("Enter -1 to exit or enter " +
+                                "anything to try again ")
+            if user_choice == "-1":
+                sys.exit(0)
+            else:
+                current_user = input("Username: ")
+                current_password = input("Password: ")
+        break
+    elif login_register == "r":
+        new_user = input("Username: ")
+        if is_user_exists(new_user):
+            print("User already exists, please login instead")
+            continue
+        while True:
+            new_password = input("Password: ")
+            confirm_password = input("Confirm Password: ")
+            if new_password != confirm_password:
+                print("Both password do not match, Try again")
+                continue
+            else:
+                register_user(new_user, new_password)
+                break
+    else:
+        print("Please enter 'l' or 'r' to continue...")
 
 
 while True:
@@ -303,6 +343,7 @@ while True:
     a - Adding a task
     va - View all tasks
     vm - View my task
+    gr - generate reports
     ds - Display statistics
     e - Exit
     : ''').lower()
@@ -373,15 +414,12 @@ while True:
         '''Reads the task from task.txt file and prints to the console in the
            format of Output.
         '''
-        uname = input("Enter username: ")
-        pwd = input("Enter password: ")
-
-        while not login(uname, pwd):
-            uname = input("Enter username: ")
-            pwd = input("Enter password: ")
+        while not login(current_user, current_password):
+            current_user = input("Enter username: ")
+            current_password = input("Enter password: ")
 
         while True:
-            total_user_tasks = view_my_tasks(uname)
+            total_user_tasks = view_my_tasks(current_user)
             try:
                 task_choice = int(input("Please select task number to " +
                                         "view/edit the details or enter -1 " +
@@ -390,7 +428,8 @@ while True:
                 print(e)
 
             if task_choice - 1 in range(0, total_user_tasks):
-                user_selected_task = get_task_details(uname, task_choice - 1)
+                user_selected_task = get_task_details(current_user,
+                                                      task_choice - 1)
 
                 modify = input("Do you want to modify task? (y/n): ").lower()
 
@@ -406,8 +445,7 @@ while True:
                             2. Due date of task
                             3. Mark task as complete
                             4. Quit
-                            :
-                            """
+                            : """
                             try:
                                 user_selection = int(input(modify_options))
                             except Exception as e:
@@ -450,19 +488,34 @@ while True:
 
             else:
                 print("\nPlease enter valid input, Try again.\n")
-
-    elif menu == 'ds':
-        '''If the user is an admin they can generate statistics about number of
-            users and tasks.'''
-
-        uname = input("Enter admin username: ")
-        pwd = input("Enter password: ")
-
-        if uname == "admin":
-            login(uname, pwd)
-            generate_reports()
+    elif menu == "gr":
+        '''Only admin user can generate user and task overview reports'''
+        if current_user == "admin":
+            message = generate_reports()
+            print(message)
         else:
             print("\nOnly admin can generate these reports.\n")
+    elif menu == 'ds':
+        '''Statistics will be displayed if user is logged in as admin'''
+        if current_user == "admin":
+            generate_reports()
+            task_overview = read_file("task_overview.txt")
+            for each_detail in task_overview:
+                print(each_detail)
+            user_overview = read_file("user_overview.txt")
+            for each_detail in user_overview[0:4]:
+                print(each_detail)
+            data = []
+            for each_user in user_overview[4:]:
+                individual_list = [d.strip() for d in each_user.split("\t")
+                                   if d != ""]
+                data.append(individual_list)
+            for record in data:
+                for item in record:
+                    print(item + "\t\t", end="")
+                print()
+        else:
+            print("\nOnly admin can see the statistics.\n")
 
     elif menu == 'e':
         print('\nGoodbye!!!\n')
